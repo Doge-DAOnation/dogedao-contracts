@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/QuintinMakwe/dogeFundMe/issues"
   },
-  "homepage": "https://github.com/QuintinMakwe/dogeFundMe#readme"
+  "homepage": "https://github.com/QuintinMakwe/dogeFundMe#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.1.0"
+  }
 }
