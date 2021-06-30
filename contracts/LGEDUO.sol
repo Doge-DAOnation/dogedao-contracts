@@ -30,6 +30,7 @@ contract LGEContract{
         bool executed;
         bool active;
         address payable withdraw_addres;
+        bytes32 harvest_purpose;
     }
     
     enum contractStateEnum {
@@ -98,7 +99,7 @@ contract LGEContract{
         return harvesters_arr;
     }
     
-    function createHarvestRequest(uint _value, address payable _withdraw_address ) public onlyHarvester{
+    function createHarvestRequest(uint _value, address payable _withdraw_address, bytes32 _harvest_purpose ) public onlyHarvester{
         require(_value < address(this).balance, "Request amount above contract balance");
         harvestRequests[harvest_rqst_arr.length] = harvestRequest({
             initiator: msg.sender,
@@ -106,16 +107,20 @@ contract LGEContract{
             no_of_confirmations: 0,
             executed: false,
             active: true,
-            withdraw_addres: _withdraw_address
+            withdraw_addres: _withdraw_address,
+            harvest_purpose: _harvest_purpose
         });
         
         harvest_rqst_arr.push(harvestRequests[harvest_rqst_arr.length]);
     }
     
     function approveHarvestRequest(uint harvest_id) public onlyHarvester isActiveHarvestRequest(harvest_id){
-        
+        //check that harvest id is within range
         require(harvest_id <= harvest_rqst_arr.length);
+        //verify that msg.sender doesn't have a prior approval 
         require(!confirmers[harvest_id][msg.sender]);
+        //verify that harvest request is active
+        require(harvestRequests[harvest_id].active, "Harvest request is currently not active");
         harvestRequests[harvest_id].no_of_confirmations += 1;
         
         //update the confirmers 
@@ -127,14 +132,9 @@ contract LGEContract{
         }
     }
     
-    function revokeHarvestRequest(uint harvest_id) public onlyHarvester isActiveHarvestRequest(harvest_id){
-        require(harvestRequests[harvest_id].initiator == msg.sender);
-        harvestRequests[harvest_id].active = false;
-    }
-    
     function resetHarvestRequestStatus(uint harvest_id) public onlyHarvester{
         require(harvestRequests[harvest_id].initiator == msg.sender, "You can only update request created by you");
-        harvestRequests[harvest_id].active = false;
+        harvestRequests[harvest_id].active = !harvestRequests[harvest_id].active;
     }
     
     function getHarvestRequest()public view onlyHarvester returns(harvestRequest[] memory){
