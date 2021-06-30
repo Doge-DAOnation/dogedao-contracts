@@ -1,5 +1,3 @@
-// SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.4;
 
 contract LGEContract{
@@ -20,6 +18,7 @@ contract LGEContract{
     
     mapping (uint => harvestRequest) public harvestRequests;
     
+    //this maps the harvest request id to addresses that have confirmed request. Neccessary to ensure no address verifies a request more than once
     mapping(uint => mapping(address => bool)) confirmers;
     
    harvestRequest[] harvest_rqst_arr;
@@ -30,6 +29,7 @@ contract LGEContract{
         uint no_of_confirmations;
         bool executed;
         bool active;
+        address payable withdraw_addres;
     }
     
     enum contractStateEnum {
@@ -63,6 +63,7 @@ contract LGEContract{
         _min_confirmation = min_confirmation;
         uint i;
         for(i = 0 ; i < founders.length; i++){
+            require(!harvesters[founders[i]]);
             harvesters[founders[i]] = true;
             harvesters_arr.push(founders[i]);
         }
@@ -110,14 +111,15 @@ contract LGEContract{
     //     harvesters[blacklist] = false;
     // }
     
-    function createHarvestRequest(uint _value ) public onlyHarvester{
+    function createHarvestRequest(uint _value, address payable _withdraw_address ) public onlyHarvester{
         require(_value < address(this).balance, "Request amount above contract balance");
         harvestRequests[harvest_rqst_arr.length] = harvestRequest({
             initiator: msg.sender,
             value: _value,
             no_of_confirmations: 0,
             executed: false,
-            active: true
+            active: true,
+            withdraw_addres: _withdraw_address
         });
         
         harvest_rqst_arr.push(harvestRequests[harvest_rqst_arr.length]);
@@ -152,11 +154,11 @@ contract LGEContract{
         return harvest_rqst_arr;
     }
     
-    function harvestLiquidity(address payable withdraw, uint harvest_request_id)public onlyHarvester isActiveHarvestRequest(harvest_request_id){
+    function harvestLiquidity(uint harvest_request_id)public onlyHarvester isActiveHarvestRequest(harvest_request_id){
         require(harvestRequests[harvest_request_id].no_of_confirmations >= _min_confirmation);
         require(harvestRequests[harvest_request_id].initiator == msg.sender);
         uint value = harvestRequests[harvest_request_id].value;
-        withdraw.transfer(value);
+        harvestRequests[harvest_request_id].withdraw_addres.transfer(value);
         harvestRequests[harvest_request_id].executed = true;
     }
 }
