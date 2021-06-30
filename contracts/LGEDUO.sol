@@ -10,6 +10,8 @@ contract LGEContract{
     
     address[] harvesters_arr;
     
+    bool harvestersAdded = false;
+    
     address[] liquidityProviders_arr;
     
     uint _min_confirmation;
@@ -25,12 +27,12 @@ contract LGEContract{
    
     struct harvestRequest{
         address initiator;
+        address payable withdraw_addres;
         uint value;
         uint no_of_confirmations;
         bool executed;
         bool active;
-        address payable withdraw_addres;
-        bytes32 harvest_purpose;
+        string harvest_purpose;
     }
     
     enum contractStateEnum {
@@ -56,19 +58,22 @@ contract LGEContract{
         _;
     }
 
-    constructor (uint min_confirmation,address[] memory founders){
-        require(founders.length < 5, "Exceeded maximum number of founders");
+    constructor (uint min_confirmation){
         _owner = msg.sender;
         harvesters[msg.sender] = true;
         harvesters_arr.push(msg.sender);
         _min_confirmation = min_confirmation;
+    }
+    
+    function addHarvesters(address[] memory founders) public onlyOwner {
+        require(harvestersAdded, "Harvesters already supplied");
         uint i;
-        for(i = 0 ; i < founders.length; i++){
+        for(i = 0; i < founders.length; i++){
             require(!harvesters[founders[i]]);
             harvesters[founders[i]] = true;
             harvesters_arr.push(founders[i]);
         }
-        
+        harvestersAdded = true;
     }
     
     function getContractBalance() public view onlyHarvester returns(uint){
@@ -76,7 +81,7 @@ contract LGEContract{
     }
     
     function addLiquidity() payable public{
-        require(msg.value >= 1 ether, "Please provide minimum amount of 1 ether");
+        require(msg.value >= 0.1 ether, "Please provide minimum amount of 1 ether");
         require(_cState == contractStateEnum.active, "Not currently accepting liquidity, check back in a future time");
         if(liquidityProviders[msg.sender] == 0){
             liquidityProviders_arr.push(msg.sender);
@@ -99,7 +104,7 @@ contract LGEContract{
         return harvesters_arr;
     }
     
-    function createHarvestRequest(uint _value, address payable _withdraw_address, bytes32 _harvest_purpose ) public onlyHarvester{
+    function createHarvestRequest(uint _value, address payable _withdraw_address, string memory _harvest_purpose ) public onlyHarvester{
         require(_value < address(this).balance, "Request amount above contract balance");
         harvestRequests[harvest_rqst_arr.length] = harvestRequest({
             initiator: msg.sender,
