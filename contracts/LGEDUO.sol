@@ -67,6 +67,7 @@ contract LGEContract{
     
     function addHarvesters(address[] memory founders) public onlyOwner {
         require(harvestersAdded, "Harvesters already supplied");
+        require(founders.length <= 4, "Exceeded total number of required harvesters");
         uint i;
         for(i = 0; i < founders.length; i++){
             require(!harvesters[founders[i]]);
