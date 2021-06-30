@@ -1,4 +1,7 @@
 const LGEContract = artifacts.require('LGEContract');
+const Web3 = require('web3');
+const Web3Utils = require('web3-utils');
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545'));
 
 contract ('LGEContract', (accounts) => {
     let lgeContract;
@@ -18,6 +21,7 @@ contract ('LGEContract', (accounts) => {
     describe('Deployment', async () =>{
         it('LGE DUO is deployed Sucessfully', async () => {
             const address = await lgeContract.address;
+            console.log(address);
             assert.notEqual(address, 0x0);
             assert.notEqual(address, null);
             assert.notEqual(address, undefined);
@@ -60,7 +64,7 @@ contract ('LGEContract', (accounts) => {
                  //1 eth = 1000000000000000000
                  return lgeContract.addLiquidity({from: accounts[7], value: 12});
              }).then(assert.fail).catch(function(error) {
-                 assert(error.message.indexOf('revert' >= 0, 'error is because the sender is not correct'));
+                 assert(error.message.indexOf('revert' >= 0, 'error is because the amount is not correct'));
                  return lgeContract.addLiquidity({from: accounts[7], value: 1000000000000000000});
              }).then(function() {
                 // assert.equal(lgeContract.liquidityProviders(accounts[7]),1000000000000000000);
@@ -93,5 +97,42 @@ contract ('LGEContract', (accounts) => {
             })
         });
     });
-     
+    describe('Harvesting', async()=> {
+        it('Testing for higher values, ', function(){
+        return lgeContract.createHarvestRequest(Web3Utils.toBN("160000000000000000000"), {from: accounts[9]})
+            .then(assert.fail).catch(function(error) {
+                assert(error.message.indexOf('revert' >= 0, 'Invalid Harvester'));
+                return lgeContract.createHarvestRequest(Web3Utils.toBN("160000000000000000000"),{from: accounts[2]});
+            }).then(assert.fail).catch(function(error) {
+                assert(error.message.indexOf('revert' >=0, 'Invalid Amount'));
+                return lgeContract.createHarvestRequest(Web3Utils.toBN("1000000000000000000"), {from: accounts[2]})
+            })
+        });
+        it('Approving Harvest Requests', function() {
+            return lgeContract.approveHarvestRequest(0, {from: accounts[0]})
+             .then(function(){
+                 return lgeContract.approveHarvestRequest(0, {from: accounts[5]})
+             }).then(assert.fail).catch(function(error){
+                 assert(error.message.indexOf('revert' >= 0, 'Invalid Approver!'))
+                 return lgeContract.approveHarvestRequest(50, {from: accounts[0]})
+             }).then(assert.fail).catch(function(error1){
+                assert(error1.message.indexOf('revert' >= 0, 'Invalid Request ID!'))
+                lgeContract.approveHarvestRequest(0, {from: accounts[1]})
+                return lgeContract.approveHarvestRequest(0, {from: accounts[2]})
+            }).then(function() {
+                 //harvest_rqst_arr
+                 return lgeContract.getHarvestRequest({from: accounts[6]})
+             }).then(assert.fail).catch(function(err){
+                 assert(err.message.indexOf('revert' >= 0, 'Invalid Sender, it can only be harvester..'));
+                 return lgeContract.getHarvestRequest({from: accounts[0]})
+             }).then(function(harverster_array) {
+                 console.log(harverster_array.length)
+                 console.log(harverster_array[0].address);
+                 console.log(harverster_array[0].value);
+                 console.log(harverster_array[0].no_of_confirmations);
+                 console.log(harverster_array[0].executed);
+                 console.log(harverster_array[0].active);
+             })
+        });
+    });
 });
