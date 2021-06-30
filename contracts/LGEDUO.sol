@@ -94,22 +94,9 @@ contract LGEContract{
         return;
     }
     
-    // function addHarvesters(address newHarvester) public onlyOwner{
-    //     require(!harvesters[newHarvester]);
-    //     harvesters[newHarvester] = true;
-        
-    //     harvesters_arr.push(newHarvester);
-    //     return;
-    // }
-    
     function getHarvesters() external view returns(address[] memory){
         return harvesters_arr;
     }
-    
-    // function deleteHarvesters(address blacklist) public onlyOwner{
-    //     require(harvesters[blacklist]);
-    //     harvesters[blacklist] = false;
-    // }
     
     function createHarvestRequest(uint _value, address payable _withdraw_address ) public onlyHarvester{
         require(_value < address(this).balance, "Request amount above contract balance");
