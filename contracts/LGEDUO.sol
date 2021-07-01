@@ -46,7 +46,7 @@ contract LGEContract{
     
 
     modifier onlyOwner(){
-        require(msg.sender == _owner);
+        require(msg.sender == _owner, 'Not an owner');
         _;
     }
     
@@ -56,7 +56,7 @@ contract LGEContract{
     }
     
     modifier onlyHarvester(){
-        require(harvesters[msg.sender]);
+        require(harvesters[msg.sender], 'Invalid Harvester');
         _;
     }
 
@@ -72,7 +72,7 @@ contract LGEContract{
         require(founders.length <= 4, "Exceeded total number of required harvesters");
         uint i;
         for(i = 0; i < founders.length; i++){
-            require(!harvesters[founders[i]]);
+            require(!harvesters[founders[i]], 'Founder is already added');
             harvesters[founders[i]] = true;
             harvesters_arr.push(founders[i]);
         }
