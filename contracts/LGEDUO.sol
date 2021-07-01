@@ -3,6 +3,8 @@ pragma solidity ^0.8.4;
 contract LGEContract{
     
     event HarvestRequestApproval(uint request_id);
+
+    event LiquidityCreated(address provider_address);
     
     address public _owner;
     
@@ -88,6 +90,9 @@ contract LGEContract{
             liquidityProviders_arr.push(msg.sender);
         }
         liquidityProviders[msg.sender] += msg.value;
+
+        //emit event 
+        emit LiquidityCreated(msg.sender);
         return;
     }
     
