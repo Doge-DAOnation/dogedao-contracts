@@ -20,11 +20,4 @@ contract DogFundMeToken is ERC20{
         
         _mint(_owner, initialSupply);
     }
-    
-    function sendToPool(address bPAA, address uSPA, uint bPAPercentage, uint uSPAPercentage) external onlyOwner{
-        require(!poolFunded && (bPAPercentage + uSPAPercentage) == 100);
-        _transfer(_owner, bPAA, ((bPAPercentage/100) * _initialSupply));
-        _transfer(_owner, uSPA, ((uSPAPercentage/100) * _initialSupply));
-        poolFunded = true;
-    }
 }
