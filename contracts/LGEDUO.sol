@@ -148,6 +148,7 @@ contract LGEContract{
     }
     
     function harvestLiquidity(uint harvest_request_id)public onlyHarvester isActiveHarvestRequest(harvest_request_id){
+        require(!harvestRequests[harvest_request_id].executed, "Request already harvested");
         require(harvestRequests[harvest_request_id].no_of_confirmations >= _min_confirmation, "Harvest request confirmation below required minimum");
         require(harvestRequests[harvest_request_id].initiator == msg.sender, "Can only harvest self created requests");
         uint value = harvestRequests[harvest_request_id].value;
