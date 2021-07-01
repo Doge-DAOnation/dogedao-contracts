@@ -10,7 +10,7 @@ contract LGEContract{
     
     address[] harvesters_arr;
     
-    bool harvestersAdded = false;
+    bool public harvestersAdded = false;
     
     address[] liquidityProviders_arr;
     
@@ -66,7 +66,7 @@ contract LGEContract{
     }
     
     function addHarvesters(address[] memory founders) public onlyOwner {
-        require(harvestersAdded, "Harvesters already supplied");
+        require(!harvestersAdded, "Harvesters already supplied");
         require(founders.length <= 4, "Exceeded total number of required harvesters");
         uint i;
         for(i = 0; i < founders.length; i++){
@@ -82,7 +82,7 @@ contract LGEContract{
     }
     
     function addLiquidity() payable public{
-        require(msg.value >= 0.1 ether, "Please provide minimum amount of 1 ether");
+        // require(msg.value >= 0.01 ether, "Please provide minimum amount of 1 ether");
         require(_cState == contractStateEnum.active, "Not currently accepting liquidity, check back in a future time");
         if(liquidityProviders[msg.sender] == 0){
             liquidityProviders_arr.push(msg.sender);
@@ -122,9 +122,9 @@ contract LGEContract{
     
     function approveHarvestRequest(uint harvest_id) public onlyHarvester isActiveHarvestRequest(harvest_id){
         //check that harvest id is within range
-        require(harvest_id <= harvest_rqst_arr.length);
+        require(harvest_id <= harvest_rqst_arr.length, "No such request");
         //verify that msg.sender doesn't have a prior approval 
-        require(!confirmers[harvest_id][msg.sender]);
+        require(!confirmers[harvest_id][msg.sender], "Already confirmed request");
         //verify that harvest request is active
         require(harvestRequests[harvest_id].active, "Harvest request is currently not active");
         harvestRequests[harvest_id].no_of_confirmations += 1;
@@ -148,8 +148,8 @@ contract LGEContract{
     }
     
     function harvestLiquidity(uint harvest_request_id)public onlyHarvester isActiveHarvestRequest(harvest_request_id){
-        require(harvestRequests[harvest_request_id].no_of_confirmations >= _min_confirmation);
-        require(harvestRequests[harvest_request_id].initiator == msg.sender);
+        require(harvestRequests[harvest_request_id].no_of_confirmations >= _min_confirmation, "Harvest request confirmation below required minimum");
+        require(harvestRequests[harvest_request_id].initiator == msg.sender, "Can only harvest self created requests");
         uint value = harvestRequests[harvest_request_id].value;
         harvestRequests[harvest_request_id].withdraw_addres.transfer(value);
         harvestRequests[harvest_request_id].executed = true;
