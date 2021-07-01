@@ -82,7 +82,7 @@ contract LGEContract{
     }
     
     function addLiquidity() payable public{
-        require(msg.value > 0 wei, "Please provide minimum amount of 1 ether");
+        require(msg.value > 0 wei, "Please provide minimum amount of 1 wei");
         require(_cState == contractStateEnum.active, "Not currently accepting liquidity, check back in a future time");
         if(liquidityProviders[msg.sender] == 0){
             liquidityProviders_arr.push(msg.sender);
@@ -107,6 +107,7 @@ contract LGEContract{
     
     function createHarvestRequest(uint _value, address payable _withdraw_address, string memory _harvest_purpose ) public onlyHarvester{
         require(_value < address(this).balance, "Request amount above contract balance");
+        require(_value > 0 wei, "Value of request should be above 0 wei");
         harvestRequests[harvest_rqst_arr.length] = harvestRequest({
             initiator: msg.sender,
             value: _value,
