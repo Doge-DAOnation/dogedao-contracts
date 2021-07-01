@@ -82,7 +82,7 @@ contract LGEContract{
     }
     
     function addLiquidity() payable public{
-        // require(msg.value >= 0.01 ether, "Please provide minimum amount of 1 ether");
+        require(msg.value > 0 wei, "Please provide minimum amount of 1 ether");
         require(_cState == contractStateEnum.active, "Not currently accepting liquidity, check back in a future time");
         if(liquidityProviders[msg.sender] == 0){
             liquidityProviders_arr.push(msg.sender);
