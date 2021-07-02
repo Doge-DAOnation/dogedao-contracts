@@ -16,7 +16,7 @@ contract LGEContract{
     
     address[] liquidityProviders_arr;
     
-    uint _min_confirmation;
+    uint public _min_confirmation;
     
     mapping (address => uint) public liquidityProviders;
     
