@@ -9,7 +9,7 @@ module.exports = {
 
   networks: {
     ropsten: {
-      url: `https://eth-ropsten.alchemyapi.io/v2/nuCQDs_kpXm1v3ySaD5tXB7EofGKTqPb`,
+      url: `https://eth-ropsten.alchemyapi.io/v2/iA8QtJx-i_49kMV8xnVc9SXR6krfjNPS`,
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     }
   },
