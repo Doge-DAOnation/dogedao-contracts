@@ -79,10 +79,6 @@ contract LGEContract{
         harvestersAdded = true;
     }
     
-    function getContractBalance() public view onlyHarvester returns(uint){
-        return address(this).balance;
-    }
-    
     function addLiquidity() payable public{
         require(msg.value > 0 wei, "Please provide minimum amount of 1 wei");
         require(_cState == contractStateEnum.active, "Not currently accepting liquidity, check back in a future time");
