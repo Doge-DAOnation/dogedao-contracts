@@ -18,9 +18,9 @@ async function main() {
 
     await lge.deployed();
 
-    const lgeContractInstance = new web3.eth.Contract(lgeAbi.abi, lge.address);
+    // const lgeContractInstance = new web3.eth.Contract(lgeAbi.abi, lge.address);
 
-    await lgeContractInstance.methods.addHarvesters(harvesters).send({ from : accounts[0] })
+    // await lgeContractInstance.methods.addHarvesters(harvesters).send({ from : accounts[0] })
 
     console.log(lge.address);
     // return lge.address;

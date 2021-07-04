@@ -8,7 +8,7 @@ module.exports = {
   solidity: "0.8.4",
 
   networks: {
-    ropsten: {
+    mainnet: {
       url: process.env.NODE_PROVIDER,
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     }

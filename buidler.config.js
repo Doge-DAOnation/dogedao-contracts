@@ -8,8 +8,8 @@ module.exports = {
         development: {
           url: "http://localhost:8545"
         },
-        ropsten: {
-          url: 'https://eth-ropsten.alchemyapi.io/v2/nuCQDs_kpXm1v3ySaD5tXB7EofGKTqPb',
+        mainnet: {
+          url: process.env.NODE_PROVIDER,
           accounts: [`0x${process.env.PRIVATE_KEY}`],
         }
       },

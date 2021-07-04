@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "npx hardhat run --network ropsten scripts/deploy.js",
     "verify" : "npx buidler verify --network ropsten 0x4A520C9b59c90BebFa6FfE707A39DBd5eC46482D '3'",
-    "main_deploy": "deployedAddress=$(npx hardhat run --network ropsten scripts/deploy.js | tail -n 1) && npx buidler verify --network ropsten \"$deployedAddress\" '3' "
+    "main_deploy": "deployedAddress=$(npx hardhat run --network mainnet scripts/deploy.js | tail -n 1) && npx buidler verify --network mainnet \"$deployedAddress\" '3' "
   },
   "repository": {
     "type": "git",
