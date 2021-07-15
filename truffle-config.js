@@ -18,11 +18,11 @@
  *
  */
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+// const HDWalletProvider = require('@truffle/hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
-const mnemonic = require('./secrets.json').mnemonic;
+// const mnemonic = require('./secrets.json').mnemonic;
 
 module.exports = {
     /**
