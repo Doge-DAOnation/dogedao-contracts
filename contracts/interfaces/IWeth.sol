@@ -3,7 +3,10 @@ pragma solidity ^0.8.4;
 
 interface IWeth {
     function deposit() external payable;
-    function withDraw(uint wad) external;
-    function approve(address guy, uint wad) external returns(bool);
-    function balanceOf(address guy) external view returns(uint);
+    function withDraw(uint) external;
+    function transfer(address, uint) external returns (bool);
+    function transferFrom(address, address, uint) external returns (bool);
+    function allowance(address, address) external returns (uint);
+    function approve(address, uint) external returns(bool);
+    function balanceOf(address) external view returns(uint);
 }

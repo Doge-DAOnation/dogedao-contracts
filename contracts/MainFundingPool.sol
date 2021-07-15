@@ -7,11 +7,15 @@ import './interfaces/IWeth.sol';
 contract MainFundingPool {
     IBPool public bPool;
     IERC20 public dai;
+    IERC20 public wbtc;
+    IERC20 public usdc;
     IWeth public weth;
 
-    constructor(address _bPool, address _dai, address _weth) {
+    constructor(address _bPool, address _dai, address _wbtc, address _usdc,address _weth) {
         bPool = IBPool(_bPool);
         dai = IERC20(_dai);
+        wbtc = IERC20(_wbtc);
+        usdc = IERC20(_usdc);
         weth = IWeth(_weth);
     }
 
