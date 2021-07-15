@@ -29,8 +29,9 @@ contract MainFundingPool {
         dai.transfer(msg.sender, daiAmount);
         uint wethBalance = weth.balanceOf(address(this));
         if(wethBalance > 0){
-            // weth.withDraw(wethBalance);
-            msg.sender.transfer(address(this).balance);
+            weth.withDraw(wethBalance);
+            (bool success,) = msg.sender.call{ value: wethBalance }("");
+            require(success, "ERR_ETH_FAILED");
         }
     }
 
