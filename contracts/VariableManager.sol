@@ -25,7 +25,7 @@ contract VariableManager is Ownable {
         );
         _poolFee = _poolFee_;
         _mainFundingPoolFee = _mainFundingPoolFee_;
-        _decimals = _decimals_
+        _decimals = _decimals_;
     }
 
     function setMainFundingPoolFee(uint256 _mainFundingPoolFee_)
