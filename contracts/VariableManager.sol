@@ -51,7 +51,7 @@ contract VariableManager is Ownable {
         return _mainFundingPoolFee;
     }
 
-    function comunityRewardPoolFee() public view returns (uint256) {
+    function communityRewardPoolFee() public view returns (uint256) {
         return (_poolFee - _mainFundingPoolFee);
     }
 }
